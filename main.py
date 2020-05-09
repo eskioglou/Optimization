@@ -2,37 +2,26 @@ import pulp
 
 model = pulp.LpProblem('Minimizing cost of food problem', pulp.LpMinimize)
 
-#decisionvariables
-x1 = pulp.LpVariable('x1', lowBound=1) #apples (1 raw, skinned apple)
-x2 = pulp.LpVariable('x2', lowBound=1) #chicken (4 oz per serving)
-x3 = pulp.LpVariable('x3', lowBound=1) #brown rice (1 cup)
-x4 = pulp.LpVariable('x4', lowBound=1) #chips (1 oz)
-x5 = pulp.LpVariable('x5', lowBound=1) #spinach (1 cup)
+x1 = pulp.LpVariable('x1', lowBound=1)
+x2 = pulp.LpVariable('x2', lowBound=1)
+x3 = pulp.LpVariable('x3', lowBound=1)
+x4 = pulp.LpVariable('x4', lowBound=1)
+x5 = pulp.LpVariable('x5', lowBound=1)
 
-#nutritional facts all found from http://nutritiondata.self.com/
 vars = [x1, x2, x3, x4, x5]
 calories = [65, 328, 216, 137, 6.9]
-fat = [0, 4, 0, 2, 0] #g
-sodium = [0, 512, 10, 210, 24] #mg
-vitC = [5.7, 32, 0, 9.5, 8.4] #(mg)
-vitA = [20.25, 0, 0, 20.27, 843.9] #(mcg)
-protein = [0.3, 17.6, 5, 2.2, 1] #g
+fat = [0, 4, 0, 2, 0]
+sodium = [0, 512, 10, 210, 24]
+vitC = [5.7, 32, 0, 9.5, 8.4]
+vitA = [20.25, 0, 0, 20.27, 843.9]
+protein = [0.3, 17.6, 5, 2.2, 1]
 
-# Objective Function, for every food, loop through all nutrients
 model += .50 * x1 + .75*x2 + .5*x3 + 1*x4 + 1*x5
-
-
-# Constraints
 model += pulp.lpSum([calories[i]*vars[i] for i in range(len(vars))]) == 2000
-
 model += pulp.lpSum([fat[i]*vars[i] for i in range(len(vars))]) <= 20
-
 model += pulp.lpSum([sodium[i]*vars[i] for i in range(len(vars))]) <= 2400
-
 model += pulp.lpSum([vitC[i]*vars[i] for i in range(len(vars))]) >= 90
-
 model += pulp.lpSum([vitA[i]*vars[i] for i in range(len(vars))]) >= 700
-
 model += pulp.lpSum([protein[i]*vars[i] for i in range(len(vars))]) >= 56
 
 model.solve()
@@ -45,8 +34,7 @@ print("Servings of chips = {}".format(x4.varValue))
 print("Servings of spinach = {}".format(x5.varValue))
 
 total_cost = pulp.value(model.objective)
-
-print("\nThe total cost is ${} for us to get the required daily nutrients".format(round(total_cost, 2)))
+print("\nThe total cost is ${} for us to get the required daily nutrients".format(round(total_cost, 5)))
 
 def totalNutrients(x1, x2, x3, x4, x5):
     totalServings=[x1, x2, x3, x4, x5]
