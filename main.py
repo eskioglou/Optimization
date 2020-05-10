@@ -1,6 +1,6 @@
 import pulp
 
-model = pulp.LpProblem('Eλαχιστοποίηση κόστους', pulp.LpMinimize)
+prob = pulp.LpProblem('Minimize Cost', pulp.LpMinimize)
 
 choice1 = pulp.LpVariable('choice1', lowBound=1)
 choice2 = pulp.LpVariable('choice2', lowBound=1)
@@ -16,15 +16,15 @@ vitC = [5.7, 32, 0, 9.5, 8.4]
 vitA = [20.25, 0, 0, 20.27, 843.9]
 protein = [0.3, 17.6, 5, 2.2, 1]
 
-model += 1.50 * choice1 + 2.75*choice2 + .5*choice3 + 1*choice4 + 2*choice5
-model += pulp.lpSum([calories[i]*choices[i] for i in range(len(choices))]) == 2000
-model += pulp.lpSum([fat[i]*choices[i] for i in range(len(choices))]) <= 10
-model += pulp.lpSum([sodium[i]*choices[i] for i in range(len(choices))]) <= 2200
-model += pulp.lpSum([vitC[i]*choices[i] for i in range(len(choices))]) >= 100
-model += pulp.lpSum([vitA[i]*choices[i] for i in range(len(choices))]) >= 700
-model += pulp.lpSum([protein[i]*choices[i] for i in range(len(choices))]) >= 50
+prob += 1.50 * choice1 + 2.75*choice2 + .5*choice3 + 1*choice4 + 2*choice5
+prob += pulp.lpSum([calories[i]*choices[i] for i in range(len(choices))]) == 2000
+prob += pulp.lpSum([fat[i]*choices[i] for i in range(len(choices))]) <= 10
+prob += pulp.lpSum([sodium[i]*choices[i] for i in range(len(choices))]) <= 2200
+prob += pulp.lpSum([vitC[i]*choices[i] for i in range(len(choices))]) >= 100
+prob += pulp.lpSum([vitA[i]*choices[i] for i in range(len(choices))]) >= 700
+prob += pulp.lpSum([protein[i]*choices[i] for i in range(len(choices))]) >= 50
 
-model.solve()
+prob.solve()
 #print(pulp.LpStatus[model.status])
 
 print("Servings of apples = {}".format(choice1.varValue))
@@ -33,7 +33,7 @@ print("Servings of brown rice = {}".format(choice3.varValue))
 print("Servings of chips = {}".format(choice4.varValue))
 print("Servings of spinach = {}".format(choice5.varValue))
 
-total_cost = pulp.value(model.objective)
+total_cost = pulp.value(prob.objective)
 print("\nThe total cost is ${} for us to get the required daily nutrients".format(round(total_cost, 5)))
 
 def totalNutrients(choice1, choice2, choice3, choice4, choice5):
